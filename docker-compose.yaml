@@ -1,0 +1,36 @@
+version: "3"
+ 
+services:
+  miservicio_mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=dawmp
+      - MYSQL_ROOT_PASSWORD=abc123.
+      - MYSQL_USER=maikel
+      - MYSQL_PASSWORD=abc123.
+    volumes:
+      # Montamos un volumen para MySQL para no perder los datos de bd
+      - ./volumenes/mysql:/var/lib/mysql
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+   
+  miservicio_php:
+    image: php:7-apache
+    volumes:
+      # Montamos nuestra web desde fuera en el directorio web del contenedor
+      - ./story/:/var/www/html
+    expose:
+      - 80
+    ports:
+      - 80:80
+    links: 
+      - miservicio_mysql
+
+  miservicio_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+     - 8080:80
+    links: 
+      - miservicio_mysql:db
